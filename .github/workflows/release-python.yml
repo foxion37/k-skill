@@ -17,7 +17,9 @@ permissions:
 
 jobs:
   detect_python_packages:
-    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    runs-on: ${{ github.repository == 'foxion37/k-skill' && github.ref == 'refs/heads/main' && contains(fromJSON('["push","workflow_dispatch","schedule"]'), github.event_name) && 'mac-mini-linux-arm64' || 'ubuntu-latest' }}
     outputs:
       has_python_packages: ${{ steps.detect.outputs.has_python_packages }}
     steps:
@@ -34,7 +36,9 @@ jobs:
   scaffold-only:
     needs: detect_python_packages
     if: ${{ needs.detect_python_packages.outputs.has_python_packages != 'true' }}
-    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    runs-on: ${{ github.repository == 'foxion37/k-skill' && github.ref == 'refs/heads/main' && contains(fromJSON('["push","workflow_dispatch","schedule"]'), github.event_name) && 'mac-mini-linux-arm64' || 'ubuntu-latest' }}
     steps:
       - run: echo "No Python package exists yet. release-please remains scaffold-only."
 
